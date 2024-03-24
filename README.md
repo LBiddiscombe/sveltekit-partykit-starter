@@ -1,38 +1,53 @@
-# create-svelte
+# sveltekit-partykit-starter
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
+Thanks to: https://github.com/zeucapua/partykit-simplified
 
-## Creating a project
 
-If you're seeing this, you've probably already done this step. Congrats!
-
-```bash
-# create a new project in the current directory
-npm create svelte@latest
-
-# create a new project in my-app
-npm create svelte@latest my-app
 ```
+REPL for the mini game
+<script>
+	const buttons = $state(shuffle(Array(9).fill().map((_, index) => ({id: index + 1, lit: false, ts: null}))))
+	let nextId = $state(1);
+	let start = Date.now()
 
-## Developing
+	function shuffle(array) {
+	  for (let i = array.length - 1; i > 0; i--) {
+	    const j = Math.floor(Math.random() * (i + 1))
+	    ;[array[i], array[j]] = [array[j], array[i]]
+	  }
+	
+	  return array
+	}
+	
+	function handleClick(e) {
+		const btn = buttons.find(b => b.id === +e.target.value)
+		btn.lit = true;
+		btn.ts = Date.now() - start
+		nextId += 1;
+	}
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+	$effect(() => {
+		if (nextId > buttons.length) alert(JSON.stringify(buttons.sort((a,b) => a.id - b.id).map(b => `${b.id} ${b.ts}`), null, 2))
+	})
+	
+</script>
 
-```bash
-npm run dev
+<svelte:head>
+	<link rel="stylesheet" href="https://unpkg.com/tailwindcss@2.2.19/dist/tailwind.min.css"/>
+</svelte:head>
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+<div class="grid place-items-center w-full h-full">
+	<div class="grid grid-cols-3 grid-rows-3 gap-10 w-96 h-96 p-4 border">
+		{#each buttons as btn}
+			<button 
+				onclick={handleClick}
+				value={btn.id}
+				disabled={btn.id !== nextId}
+				class="user-none grid place-items-center border rounded-full h-20 w-20" 
+				class:bg-yellow-200={btn.lit}>
+				{btn.id}
+			</button>
+		{/each}
+	</div>
+</div>
 ```
-
-## Building
-
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
