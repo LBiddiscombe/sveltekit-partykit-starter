@@ -1,23 +1,30 @@
 import type * as Party from "partykit/server";
+import { getName } from './utils';
+
+type Player = {
+  id: string
+  userName: string,
+}
 
 export default class Server implements Party.Server {
-  constructor(readonly party: Party.Party) { }
+  players: Player[] = [];
+  constructor(readonly party: Party.Room) { }
 
   onConnect(connection: Party.Connection) {
-    console.log('onConnect', connection)
-    const envelope = JSON.stringify({
-      content: `${connection.id} has connected!`
-    });
-    // when joining, broadcast what connection (ID) the client has
+    const player = {
+      id: connection.id,
+      userName: getName()
+    }
+    this.players.push(player);
+
+    const envelope = JSON.stringify(this.players);
     this.party.broadcast(envelope);
   }
 
   async onClose(connection: Party.Connection) {
-    console.log('onClose', connection)
-    const envelope = JSON.stringify({
-      content: `${connection.id} has disconnected!`
-    });
-    // when joining, broadcast what connection (ID) the client has
+    this.players = this.players.filter(player => player.id !== connection.id);
+
+    const envelope = JSON.stringify(this.players);
     this.party.broadcast(envelope);
   }
 

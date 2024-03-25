@@ -1,23 +1,25 @@
 <script lang="ts">
-	let { data } = $props();
+	import { getCode } from '$lib';
 	let room = $state('');
 </script>
 
-<div class="container mx-auto grid h-screen place-items-center">
+<div class="container mx-auto grid h-screen max-w-xl place-items-center p-4">
 	<div
-		class="relative flex flex-col items-center gap-4 rounded-xl border-2 bg-slate-50 p-8 shadow-lg"
+		class="relative flex w-full flex-col items-center gap-4 rounded-xl border-2 border-base-300 bg-base-200 p-8 pt-24 shadow-lg"
 	>
 		<p
-			class="absolute top-0 w-full rounded-t-xl bg-primary p-4 text-center text-2xl text-primary-content"
+			class="absolute top-0 w-full rounded-t-xl bg-base-300 p-4 text-center text-2xl text-base-content"
 		>
 			Multiplayer Example
 		</p>
-		<p class="pt-12 text-xl">Hi, {data.userName}</p>
 		<div class="flex gap-2">
 			<input
 				type="text"
 				bind:value={room}
 				class="input input-lg input-bordered pr-4 font-mono text-4xl tracking-widest"
+				autocorrect="off"
+				autocomplete="off"
+				autocapitalize="off"
 				maxlength="4"
 				size="4"
 				placeholder="____"
@@ -27,6 +29,6 @@
 			>
 		</div>
 		<div class="divider select-none">OR</div>
-		<a class="btn btn-outline btn-secondary btn-lg" href="/{data.roomId}">Host a New Game</a>
+		<a class="btn btn-outline btn-secondary btn-lg" href="/{getCode()}">Host a New Game</a>
 	</div>
 </div>
