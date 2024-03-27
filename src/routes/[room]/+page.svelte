@@ -1,25 +1,59 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import PartySocket from 'partysocket';
-	import type { Player } from '$lib/types';
+	import type { GameState, Player } from '$lib/types';
+	import Waiting from './Waiting.svelte';
+	import Playing from './Playing.svelte';
+	import Results from './Results.svelte';
 
 	let socket: PartySocket;
+	let gameState: GameState = $state();
+	let me: Player | undefined = $derived(gameState?.players.find((p) => p.id === socket?.id));
+	let isHost: Boolean = $derived(me?.id === gameState?.players[0]?.id);
 
-	let username: string = $state('');
-	let message: string = $state('');
-
-	let players: Player[] = $state([]);
-	let me: Player | undefined = $state();
-
-	function sendToPartyServer() {
+	function sendToPartyServer(type: string = 'syncGameState') {
 		if (socket) {
+			if (type === 'syncGameState') {
+				const parcel = JSON.stringify({
+					message: {
+						type,
+						data: gameState
+					},
+					id: socket.id
+				});
+				socket.send(parcel);
+			}
+		}
+		if (type === 'syncPlayerState') {
 			const parcel = JSON.stringify({
-				message,
-				username
+				message: {
+					type,
+					data: me
+				},
+				id: socket.id
 			});
-
 			socket.send(parcel);
 		}
+	}
+
+	function start() {
+		if (!gameState) return;
+		gameState.status = 'Playing';
+		sendToPartyServer();
+	}
+
+	function end() {
+		if (!gameState) return;
+		sendToPartyServer('syncPlayerState');
+	}
+
+	function restart() {
+		if (!gameState) return;
+		gameState.status = 'Waiting';
+		gameState.players.forEach((p) => {
+			p.results = [];
+		});
+		sendToPartyServer();
 	}
 
 	$effect(() => {
@@ -30,52 +64,19 @@
 
 		// listen to the server's broadcasts (this.party.broadcast)
 		socket.addEventListener('message', (event) => {
-			console.log(event.data);
-			players = JSON.parse(event.data);
-
-			me = players.find((p) => p.id === socket.id);
+			gameState = JSON.parse(event.data);
 		});
 
-		return () => socket.removeEventListener('message', () => {});
+		//return () => socket.removeEventListener('message', () => {});
 	});
 </script>
 
 <div class="container mx-auto grid h-screen max-w-xl place-items-center p-4">
-	<div
-		class="relative flex min-h-[50%] w-full flex-col items-center gap-4 rounded-xl border-2 border-base-300 bg-base-200 p-8 pt-24 shadow-lg"
-	>
-		<p
-			class="absolute top-0 w-full rounded-t-xl bg-base-300 p-4 text-center text-2xl text-base-content"
-		>
-			Game Code: <span class="font-mono">{$page.params.room}</span>
-		</p>
-
-		<div class="flex w-full flex-col items-center gap-2">
-			{#if me}
-				<p class="text-2xl">Hi, {me.userName}</p>
-			{/if}
-			{#if players.length > 1}
-				<!-- content here -->
-				<div class="divider">Other Players</div>
-				{#each players as player, i}
-					{#if player.id !== me?.id}
-						<p class="rounded-lg p-2" class:border={player.id === socket.id}>
-							{player.userName}
-							{i === 0 ? '(host)' : ''}
-						</p>
-					{/if}
-				{/each}
-			{:else}
-				<div class="divider w-full">Waiting for others</div>
-			{/if}
-		</div>
-
-		<div class="flex-1"></div>
-
-		{#if players.length > 0 && players[0].id === socket.id}
-			<button class="btn btn-primary btn-lg">Start Game</button>
-		{:else}
-			<p class="text-sm">Waiting for host to start the game</p>
-		{/if}
-	</div>
+	{#if gameState?.status === 'Waiting'}
+		<Waiting players={gameState.players} {me} {isHost} {start} />
+	{:else if gameState?.status === 'Playing'}
+		<Playing players={gameState.players} {me} {end} />
+	{:else if gameState?.status === 'Results'}
+		<Results players={gameState.players} {me} {restart} />
+	{/if}
 </div>

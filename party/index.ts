@@ -4,41 +4,66 @@ import { getName } from './utils';
 type Player = {
   id: string
   userName: string,
+  results: Number[]
+}
+
+type GameState = {
+  status: "Waiting" | "Playing" | "Results";
+  players: Player[]
 }
 
 export default class Server implements Party.Server {
-  players: Player[] = [];
+  gameState: GameState = {
+    status: "Waiting",
+    players: []
+  }
   constructor(readonly party: Party.Room) { }
 
   onConnect(connection: Party.Connection) {
     const player = {
       id: connection.id,
-      userName: getName()
+      userName: getName(),
+      results: []
     }
-    this.players.push(player);
+    this.gameState.players.push(player);
 
-    const envelope = JSON.stringify(this.players);
+    const envelope = JSON.stringify(this.gameState);
     this.party.broadcast(envelope);
   }
 
   async onClose(connection: Party.Connection) {
-    this.players = this.players.filter(player => player.id !== connection.id);
-
-    const envelope = JSON.stringify(this.players);
-    this.party.broadcast(envelope);
+    this.gameState.players = this.gameState.players.filter(player => player.id !== connection.id);
+    this.party.broadcast(JSON.stringify(this.gameState));
   }
 
   onMessage(message: string, sender: Party.Connection) {
-    // get parcel sent from client by parsing 'message'
-    const parcel: { message: string, username: string } = JSON.parse(message);
+    let isReadyToBroadcast = false;
+    const parcel = JSON.parse(message);
 
-    // what we are sending back
-    const envelope = JSON.stringify({
-      content: `[ID: ${sender.id}] ${parcel.username}: ${parcel.message}`
-    });
+    switch (parcel.message.type) {
+      case "syncGameState":
+        this.gameState = parcel.message.data;
+        isReadyToBroadcast = true;
+        break;
+      case "syncPlayerState":
+        let me = this.gameState.players.find(player => player.id === sender.id);
+        if (me) me.results = [...parcel.message.data.results]
+        const allDone = this.gameState.players.every((p) => p.results.length === 4);
+        if (allDone) {
+          this.gameState.status = 'Results';
+          isReadyToBroadcast = true;
+        }
+        break;
 
-    // broadcast what was said to everyone
-    this.party.broadcast(envelope);
+      default:
+        break;
+    }
+
+    if (isReadyToBroadcast) {
+      const envelope = JSON.stringify(this.gameState);
+      this.party.broadcast(envelope);
+      console.log('broadcast', envelope);
+    }
   }
 }
 
