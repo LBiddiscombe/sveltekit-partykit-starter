@@ -43,7 +43,7 @@
 </script>
 
 <div
-	class="relative flex min-h-[50%] w-full flex-col items-center gap-4 rounded-xl border-2 border-base-300 bg-base-200 p-8 pt-24 shadow-lg"
+	class="relative flex h-full max-h-[768px] w-full flex-col items-center gap-4 rounded-xl border-2 border-base-300 bg-base-200 p-8 pt-24 shadow-lg"
 >
 	<p
 		class="absolute top-0 w-full rounded-t-xl bg-base-300 p-4 text-center text-2xl text-base-content"
@@ -51,7 +51,7 @@
 		Playing Game Code: <span class="font-mono">{$page.params.room}</span>
 	</p>
 
-	<div class="flex w-full flex-col items-center gap-2">
+	<div class="flex h-full w-full flex-col items-center justify-center gap-2">
 		{#if me}
 			<p class="text-xl">{me.userName}{countdown > 0 ? ', get ready...' : `, let's go!`}</p>
 		{/if}
@@ -77,7 +77,7 @@
 				{/if}
 			</div>
 		{:else}
-			<div class="divider w-full">Waiting for others</div>
+			<div class="divider w-full">Yawn... waiting for others</div>
 		{/if}
 	</div>
 </div>

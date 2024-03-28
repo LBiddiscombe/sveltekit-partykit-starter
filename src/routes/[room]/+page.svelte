@@ -59,7 +59,10 @@
 	$effect(() => {
 		socket = new PartySocket({
 			host: 'http://192.168.1.8:1999',
-			room: $page.params.room
+			room: $page.params.room,
+			query: async () => ({
+				playerName: $page.url.searchParams.get('name')
+			})
 		});
 
 		// listen to the server's broadcasts (this.party.broadcast)

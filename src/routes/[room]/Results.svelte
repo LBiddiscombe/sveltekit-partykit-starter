@@ -30,7 +30,7 @@
 </script>
 
 <div
-	class="relative flex min-h-[50%] w-full flex-col items-center gap-4 rounded-xl border-2 border-base-300 bg-base-200 p-8 pt-24 shadow-lg"
+	class="relative flex h-full max-h-[768px] w-full flex-col items-center gap-4 rounded-xl border-2 border-base-300 bg-base-200 p-8 pt-24 shadow-lg"
 >
 	<p
 		class="absolute top-0 w-full rounded-t-xl bg-base-300 p-4 text-center text-2xl text-base-content"
@@ -39,7 +39,13 @@
 	</p>
 
 	<div class="flex w-full flex-col items-center gap-2">
-		<p>{step >= 0 ? `Button ${step + 1} of ${gameState.buttonCount}` : `Who was the fastest? `}</p>
+		{#if step < 0}
+			<p>Who was the fastest?</p>
+		{:else if step < gameState.buttonCount - 1}
+			<p>{`Button ${step + 1} of ${gameState.buttonCount}`}</p>
+		{:else}
+			<p>And the winner is...</p>
+		{/if}
 		{#each sortedPlayers as player, i (player.id)}
 			<p
 				class="rounded-lg p-2 px-4"
@@ -53,8 +59,8 @@
 			</p>
 		{/each}
 	</div>
-	<div class="flex-1"></div>
 
+	<div class="flex-1"></div>
 	{#if isHost}
 		<button onclick={restart} class="btn btn-primary btn-lg">Restart Game</button>
 	{:else}

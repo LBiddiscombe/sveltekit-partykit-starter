@@ -1,5 +1,5 @@
 import type * as Party from "partykit/server";
-import { getName } from './utils';
+import { getName } from '$lib/utils';
 import type { GameState } from '$lib/types';
 
 export default class Server implements Party.Server {
@@ -10,10 +10,11 @@ export default class Server implements Party.Server {
   }
   constructor(readonly party: Party.Room) { }
 
-  onConnect(connection: Party.Connection) {
+  onConnect(connection: Party.Connection, ctx: Party.ConnectionContext) {
+    const params = new URLSearchParams(ctx.request.url);
     const player = {
       id: connection.id,
-      userName: getName(),
+      userName: params.get("playerName") ?? getName(),
       results: []
     }
     this.gameState.players.push(player);
