@@ -77,6 +77,6 @@
 	{:else if gameState?.status === 'Playing'}
 		<Playing {gameState} {me} {end} />
 	{:else if gameState?.status === 'Results'}
-		<Results {gameState} {me} {restart} />
+		<Results {gameState} {me} {isHost} {restart} />
 	{/if}
 </div>

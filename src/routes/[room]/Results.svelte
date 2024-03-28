@@ -6,8 +6,10 @@
 	const {
 		gameState,
 		me,
+		isHost,
 		restart
-	}: { gameState: GameState; me: Player | undefined; restart: () => void } = $props();
+	}: { gameState: GameState; me: Player | undefined; isHost: Boolean; restart: () => void } =
+		$props();
 
 	let step = $state(-1);
 	let sortedPlayers = $state([...gameState.players]);
@@ -24,7 +26,7 @@
 
 	$inspect(step);
 
-	setTimeout(stepThroughResults, 1000);
+	setTimeout(stepThroughResults, 2000);
 </script>
 
 <div
@@ -37,7 +39,7 @@
 	</p>
 
 	<div class="flex w-full flex-col items-center gap-2">
-		<p>💡 x {step + 1}</p>
+		<p>{step >= 0 ? `Button ${step + 1} of ${gameState.buttonCount}` : `Who was the fastest? `}</p>
 		{#each sortedPlayers as player, i (player.id)}
 			<p
 				class="rounded-lg p-2 px-4"
@@ -53,5 +55,9 @@
 	</div>
 	<div class="flex-1"></div>
 
-	<button onclick={restart} class="btn btn-primary btn-lg">Restart Game</button>
+	{#if isHost}
+		<button onclick={restart} class="btn btn-primary btn-lg">Restart Game</button>
+	{:else}
+		<p class="text-sm">Waiting for host to restart the game</p>
+	{/if}
 </div>

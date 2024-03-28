@@ -1,27 +1,45 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import type { GameState, Player } from '$lib/types';
+	import { shuffle } from '$lib/utils';
 
 	const { gameState, me, end }: { gameState: GameState; me: Player | undefined; end: () => void } =
 		$props();
 
-	let totalTime = 0;
+	const buttons = $state(
+		shuffle(
+			Array(9)
+				.fill({})
+				.map((_, index) => ({ id: index + 1, lit: false }))
+		)
+	);
+	let nextId = $state(1);
+	let start = Date.now();
 
-	function play() {
-		if (me) {
-			const ts = Math.floor(Math.random() * 1000);
-			totalTime += ts;
-			me.results.push(totalTime);
+	let countdown = $state(3);
 
-			if (me.results.length === gameState.buttonCount) {
-				end();
-			} else {
-				setTimeout(play, ts);
-			}
+	function intro() {
+		countdown -= 1;
+		if (countdown > 0) {
+			setTimeout(intro, 1000);
+		}
+		start = Date.now();
+	}
+	setTimeout(intro, 1000);
+
+	function handleClick(e: MouseEvent) {
+		if (!me) return;
+
+		const target = e.target as HTMLButtonElement;
+		const btn = buttons.find((b) => b.id === +target.value);
+		btn.lit = true;
+		nextId += 1;
+
+		me.results.push(Date.now() - start);
+		if (me.results.length === gameState.buttonCount) {
+			end();
 		}
 	}
-
-	play();
 </script>
 
 <div
@@ -35,10 +53,29 @@
 
 	<div class="flex w-full flex-col items-center gap-2">
 		{#if me}
-			<p class="text-2xl">{me.userName}</p>
+			<p class="text-xl">{me.userName}{countdown > 0 ? ', get ready...' : `, let's go!`}</p>
 		{/if}
 		{#if me && me.results.length < gameState.buttonCount}
-			<div class="divider w-full">Playing... {me?.results.length} / {gameState.buttonCount}</div>
+			<div class="grid place-items-center">
+				{#if countdown > 0}
+					<p class="text-6xl">{countdown}</p>
+				{:else}
+					<div class="grid grid-cols-3 grid-rows-3 gap-10 p-4">
+						{#each buttons as btn}
+							<button
+								onclick={handleClick}
+								value={btn.id}
+								disabled={btn.id !== nextId}
+								class="grid aspect-square w-16 select-none place-items-center rounded-full border text-2xl"
+								class:bg-yellow-200={btn.lit}
+								class:text-black={btn.lit}
+							>
+								{btn.id}
+							</button>
+						{/each}
+					</div>
+				{/if}
+			</div>
 		{:else}
 			<div class="divider w-full">Waiting for others</div>
 		{/if}

@@ -22,7 +22,7 @@
 
 	<div class="flex w-full flex-col items-center gap-2">
 		{#if me}
-			<p class="text-2xl">Hi, {me.userName} {isHost ? '(host)' : ''}</p>
+			<p class="text-xl">Hi, {me.userName} {isHost ? '(host)' : ''}</p>
 		{/if}
 		{#if gameState.players.length > 1}
 			<!-- content here -->
