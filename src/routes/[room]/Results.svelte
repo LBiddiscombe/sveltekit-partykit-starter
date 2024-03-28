@@ -1,16 +1,30 @@
 <script lang="ts">
+	import { flip } from 'svelte/animate';
 	import { page } from '$app/stores';
-	import type { Player } from '$lib/types';
+	import type { GameState, Player } from '$lib/types';
 
 	const {
-		players,
+		gameState,
 		me,
 		restart
-	}: { players: Player[]; me: Player | undefined; restart: () => void } = $props();
+	}: { gameState: GameState; me: Player | undefined; restart: () => void } = $props();
 
-	const sortedPlayers = [...players].sort((a, b) => {
-		return Number(a.results[3]) - Number(b.results[3]);
-	});
+	let step = $state(-1);
+	let sortedPlayers = $state([...gameState.players]);
+
+	function stepThroughResults() {
+		step += 1;
+		sortedPlayers = [...gameState.players].sort((a, b) => {
+			return Number(a.results[step]) - Number(b.results[step]);
+		});
+		if (step < gameState.buttonCount - 1) {
+			setTimeout(stepThroughResults, 1000);
+		}
+	}
+
+	$inspect(step);
+
+	setTimeout(stepThroughResults, 1000);
 </script>
 
 <div
@@ -23,9 +37,17 @@
 	</p>
 
 	<div class="flex w-full flex-col items-center gap-2">
-		{#each sortedPlayers as player, i}
-			<p class="p-2" class:font-bold={player.id === me?.id}>
-				{player.userName} - {(+player.results[3] / 1000).toFixed(3)}s
+		<p>💡 x {step + 1}</p>
+		{#each sortedPlayers as player, i (player.id)}
+			<p
+				class="rounded-lg p-2 px-4"
+				class:bg-yellow-300={step === gameState.buttonCount - 1 && i === 0}
+				class:text-black={step === gameState.buttonCount - 1 && i === 0}
+				animate:flip
+			>
+				{step === gameState.buttonCount - 1 && i === 0 ? '🏆 ' : ''}
+				{player.userName}{player.id === me?.id ? ' (me)' : ''}
+				{step >= 0 ? ` - ${(+player.results[step] / 1000).toFixed(3)}s` : ''}
 			</p>
 		{/each}
 	</div>

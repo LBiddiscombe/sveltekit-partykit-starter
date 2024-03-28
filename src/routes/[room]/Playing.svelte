@@ -1,19 +1,19 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import type { Player } from '$lib/types';
+	import type { GameState, Player } from '$lib/types';
 
-	const { players, me, end }: { players: Player[]; me: Player | undefined; end: () => void } =
+	const { gameState, me, end }: { gameState: GameState; me: Player | undefined; end: () => void } =
 		$props();
 
 	let totalTime = 0;
 
 	function play() {
 		if (me) {
-			const ts = Math.floor(Math.random() * 10000);
+			const ts = Math.floor(Math.random() * 1000);
 			totalTime += ts;
 			me.results.push(totalTime);
 
-			if (me.results.length === 4) {
+			if (me.results.length === gameState.buttonCount) {
 				end();
 			} else {
 				setTimeout(play, ts);
@@ -37,8 +37,8 @@
 		{#if me}
 			<p class="text-2xl">{me.userName}</p>
 		{/if}
-		{#if me && me.results.length < 4}
-			<div class="divider w-full">Playing... {me?.results.length} / 4</div>
+		{#if me && me.results.length < gameState.buttonCount}
+			<div class="divider w-full">Playing... {me?.results.length} / {gameState.buttonCount}</div>
 		{:else}
 			<div class="divider w-full">Waiting for others</div>
 		{/if}

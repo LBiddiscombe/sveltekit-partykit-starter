@@ -1,9 +1,11 @@
 import type * as Party from "partykit/server";
 import { getName } from './utils';
+import type { GameState } from '$lib/types';
 
 export default class Server implements Party.Server {
   gameState: GameState = {
     status: "Waiting",
+    buttonCount: 9,
     players: []
   }
   constructor(readonly party: Party.Room) { }
@@ -37,7 +39,7 @@ export default class Server implements Party.Server {
       case "syncPlayerState":
         let me = this.gameState.players.find(player => player.id === sender.id);
         if (me) me.results = [...parcel.message.data.results]
-        const allDone = this.gameState.players.every((p) => p.results.length === 4);
+        const allDone = this.gameState.players.every((p) => p.results.length === this.gameState.buttonCount);
         if (allDone) {
           this.gameState.status = 'Results';
           isReadyToBroadcast = true;
@@ -51,7 +53,6 @@ export default class Server implements Party.Server {
     if (isReadyToBroadcast) {
       const envelope = JSON.stringify(this.gameState);
       this.party.broadcast(envelope);
-      console.log('broadcast', envelope);
     }
   }
 }

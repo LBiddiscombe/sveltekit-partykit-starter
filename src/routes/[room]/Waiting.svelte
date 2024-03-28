@@ -1,13 +1,14 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import type { Player } from '$lib/types';
+	import type { GameState, Player } from '$lib/types';
 
 	const {
-		players,
+		gameState,
 		me,
 		isHost,
 		start
-	}: { players: Player[]; me: Player | undefined; isHost: Boolean; start: () => void } = $props();
+	}: { gameState: GameState; me: Player | undefined; isHost: Boolean; start: () => void } =
+		$props();
 </script>
 
 <div
@@ -23,10 +24,10 @@
 		{#if me}
 			<p class="text-2xl">Hi, {me.userName} {isHost ? '(host)' : ''}</p>
 		{/if}
-		{#if players.length > 1}
+		{#if gameState.players.length > 1}
 			<!-- content here -->
 			<div class="divider">Other Players</div>
-			{#each players as player, i}
+			{#each gameState.players as player, i}
 				{#if player.id !== me?.id}
 					<p class="p-2">
 						{player.userName}
