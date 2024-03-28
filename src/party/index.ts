@@ -1,17 +1,6 @@
 import type * as Party from "partykit/server";
 import { getName } from './utils';
 
-type Player = {
-  id: string
-  userName: string,
-  results: Number[]
-}
-
-type GameState = {
-  status: "Waiting" | "Playing" | "Results";
-  players: Player[]
-}
-
 export default class Server implements Party.Server {
   gameState: GameState = {
     status: "Waiting",

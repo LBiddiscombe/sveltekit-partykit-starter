@@ -1,6 +1,6 @@
 {
-  "$schema": "https://www.partykit.io/schema.json",
-  "name": "sveltekit-partykit-starter-party",
-  "main": "party/index.ts",
-  "compatibilityDate": "2024-03-23"
+	"$schema": "https://www.partykit.io/schema.json",
+	"name": "sveltekit-partykit-starter-party",
+	"main": "src/party/index.ts",
+	"compatibilityDate": "2024-03-23"
 }
