@@ -62,3 +62,4 @@
 {:else}
 	<p class="text-sm">Waiting for host to restart the game</p>
 {/if}
+<a href="/" class="underline">Leave Game</a>
