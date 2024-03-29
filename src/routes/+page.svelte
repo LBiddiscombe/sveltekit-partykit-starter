@@ -43,8 +43,9 @@
 				size="4"
 				placeholder="____"
 			/>
-			<a class="btn btn-primary btn-lg" href={room.length < 4 ? 'javascript:void(0)' : `/${room}`}
-				>Join</a
+			<a
+				class="btn btn-primary btn-lg"
+				href={room.length < 4 ? 'javascript:void(0)' : `/${room}?name=${name}`}>Join</a
 			>
 		</div>
 		<div class="divider select-none">OR</div>

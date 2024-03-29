@@ -60,7 +60,7 @@
 					value={btn.id}
 					disabled={btn.id !== nextId}
 					class="grid h-full w-full select-none place-items-center rounded-full border text-5xl"
-					class:border-4={btn.id === nextId}
+					class:outline={btn.id === nextId}
 					class:bg-yellow-200={btn.lit}
 					class:text-black={btn.lit}
 				>

@@ -28,8 +28,6 @@
 		}
 	}
 
-	$inspect(gameState);
-
 	setTimeout(stepThroughResults, 2000);
 </script>
 
@@ -38,7 +36,6 @@
 		<p>Who was the fastest?</p>
 	{:else if step < gameState.buttonCount - 1}
 		<p>{`Button ${step + 1} of ${gameState.buttonCount}`}</p>
-		<button onclick={skipToResult}>Skip to result</button>
 	{:else}
 		<p>And the winner is...</p>
 	{/if}
@@ -57,6 +54,9 @@
 </div>
 
 <div class="flex-1"></div>
+{#if step < gameState.buttonCount - 1}
+	<button onclick={skipToResult} class="underline">Skip to result</button>
+{/if}
 {#if isHost}
 	<button onclick={restart} class="btn btn-primary btn-lg">Restart Game</button>
 {:else}

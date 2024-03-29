@@ -62,9 +62,9 @@
 		socket = new PartySocket({
 			host: 'http://192.168.1.8:1999',
 			room: $page.params.room,
-			query: async () => ({
+			query: {
 				playerName: $page.url.searchParams.get('name')
-			})
+			}
 		});
 
 		// listen to the server's broadcasts (this.party.broadcast)
@@ -72,7 +72,10 @@
 			gameState = JSON.parse(event.data);
 		});
 
-		//return () => socket.removeEventListener('message', () => {});
+		return () => {
+			socket.removeEventListener('message', () => {});
+			socket.close();
+		};
 	});
 </script>
 
@@ -81,7 +84,7 @@
 >
 	<div class="flex h-full w-full flex-col items-center gap-8 py-8">
 		<p class="w-full text-center text-2xl text-base-content">
-			Game Code: <span class="bg-base-300 p-4 font-mono">{$page.params.room}</span>
+			Game Code: <span class="rounded-full bg-base-300 p-4 font-mono">{$page.params.room}</span>
 		</p>
 		{#if gameState?.status === 'Waiting'}
 			<Waiting {gameState} {me} {isHost} {start} />

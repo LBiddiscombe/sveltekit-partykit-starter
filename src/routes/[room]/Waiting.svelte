@@ -9,8 +9,6 @@
 		start
 	}: { gameState: GameState; me: Player | undefined; isHost: Boolean; start: () => void } =
 		$props();
-
-	$inspect(gameState);
 </script>
 
 <div class="flex w-full flex-col items-center gap-2">
@@ -39,3 +37,4 @@
 {:else}
 	<p class="text-sm">Waiting for host to start the game</p>
 {/if}
+<a href="/" class="underline">Leave Game</a>
