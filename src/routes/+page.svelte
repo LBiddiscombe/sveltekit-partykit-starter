@@ -1,7 +1,16 @@
 <script lang="ts">
 	import { getCode, getName } from '$lib';
+	import { onMount } from 'svelte';
 	let room = $state('');
-	let name = $state(getName()); // todo: sync name to localStorage
+	let name = $state(''); // todo: sync name to localStorage
+
+	onMount(() => {
+		name = localStorage.getItem('name') || getName();
+	});
+
+	$effect(() => {
+		localStorage.setItem('name', name);
+	});
 </script>
 
 <div
