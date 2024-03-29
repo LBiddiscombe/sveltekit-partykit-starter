@@ -5,7 +5,7 @@ import type { GameState } from '$lib/types';
 export default class Server implements Party.Server {
   gameState: GameState = {
     status: "Waiting",
-    buttonCount: randomArrayItem([1, 4, 9]),
+    buttonCount: randomArrayItem([1, 4, 9, 16]),
     players: []
   }
   constructor(readonly party: Party.Room) { }

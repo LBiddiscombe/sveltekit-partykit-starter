@@ -51,7 +51,7 @@
 	function restart() {
 		if (!gameState) return;
 		gameState.status = 'Waiting';
-		gameState.buttonCount = randomArrayItem([1, 4, 9]);
+		gameState.buttonCount = randomArrayItem([1, 4, 9, 16]);
 		gameState.players.forEach((p) => {
 			p.results = [];
 		});
@@ -80,7 +80,7 @@
 </script>
 
 <div
-	class="mx-auto grid h-screen max-h-svh place-items-center md:container md:max-h-[768px] md:max-w-md"
+	class="mx-auto grid h-screen max-h-svh select-none place-items-center md:container md:max-h-[768px] md:max-w-md"
 >
 	<div class="flex h-full w-full flex-col items-center gap-8 py-8">
 		<p class="w-full text-center text-2xl text-base-content">
