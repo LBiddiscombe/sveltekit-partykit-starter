@@ -2,10 +2,14 @@
 	import { getCode, getName } from '$lib';
 	import { onMount } from 'svelte';
 	let room = $state('');
-	let name = $state(''); // todo: sync name to localStorage
+	let name = $state('');
+
+	let modal: HTMLDialogElement;
 
 	onMount(() => {
 		name = localStorage.getItem('name') || getName();
+		const showHelp = !localStorage.getItem('name');
+		if (showHelp) modal.showModal();
 	});
 
 	$effect(() => {
@@ -52,5 +56,25 @@
 		<a class="btn btn-outline btn-secondary btn-lg" href="/{getCode()}?name={name}"
 			>Host a New Game</a
 		>
+
+		<button class="mt-16 underline" onclick={() => modal.showModal()}>Show Help</button>
 	</div>
 </div>
+
+<!-- Open the modal using ID.showModal() method -->
+<dialog id="my_modal_2" class="modal" bind:this={modal}>
+	<div class="modal-box flex flex-col gap-4">
+		<h3 class="text-lg font-bold">Simple Multiplayer Reaction Game</h3>
+		<div class="divider"></div>
+		<p class="">
+			Create a new game room, and share the code with friends, or join with a code shared with you.
+		</p>
+		<p class="">The "game" is simple - you'll be shown 1, 4, 9 or 16 labelled buttons in a grid.</p>
+		<p class="">They are in a random order.</p>
+		<p class="">Click them in sequence starting at 1.</p>
+		<p class="">Fastest to click them all wins!</p>
+	</div>
+	<form method="dialog" class="modal-backdrop">
+		<button>close</button>
+	</form>
+</dialog>

@@ -6,6 +6,7 @@
 	import Playing from './Playing.svelte';
 	import Results from './Results.svelte';
 	import { randomArrayItem } from '$lib';
+	import { dev } from '$app/environment';
 
 	let socket: PartySocket;
 	let gameState: GameState | undefined = $state();
@@ -60,7 +61,9 @@
 
 	$effect(() => {
 		socket = new PartySocket({
-			host: 'http://192.168.1.8:1999',
+			host: dev
+				? 'localhost:1999'
+				: `https://sveltekit-partykit-starter-party.lbiddiscombe.partykit.dev`,
 			room: $page.params.room,
 			query: {
 				playerName: $page.url.searchParams.get('name')
