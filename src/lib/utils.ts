@@ -40,7 +40,7 @@ export function randomInt(min: number, max: number) {
   return Math.floor(Math.random() * (max - min)) + min
 }
 
-export function randomArrayItem(arr: string[] = []) {
+export function randomArrayItem(arr: any[] = []) {
   const ensuredArray = arr instanceof Array ? arr : [arr]
   return ensuredArray[randomInt(0, ensuredArray.length)]
 }

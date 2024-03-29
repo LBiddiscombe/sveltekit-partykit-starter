@@ -1,11 +1,11 @@
 import type * as Party from "partykit/server";
-import { getName } from '$lib/utils';
+import { getName, randomArrayItem } from '$lib/utils';
 import type { GameState } from '$lib/types';
 
 export default class Server implements Party.Server {
   gameState: GameState = {
     status: "Waiting",
-    buttonCount: 9,
+    buttonCount: randomArrayItem([1, 4, 9]),
     players: []
   }
   constructor(readonly party: Party.Room) { }

@@ -4,27 +4,23 @@
 	let name = $state(getName()); // todo: sync name to localStorage
 </script>
 
-<div class="container mx-auto grid h-screen max-w-xl place-items-center p-4">
-	<div
-		class="relative flex h-full max-h-[768px] w-full flex-col items-center justify-center gap-4 rounded-xl border-2 border-base-300 bg-base-200 p-8 pt-24 shadow-lg"
-	>
-		<p
-			class="absolute top-0 w-full rounded-t-xl bg-base-300 p-4 text-center text-2xl text-base-content"
-		>
-			Multiplayer Example
-		</p>
-
-		<div class="flex items-center gap-4">
+<div
+	class="mx-auto grid h-screen max-h-svh place-items-center md:container md:max-h-[768px] md:max-w-md"
+>
+	<div class="flex flex-col items-center gap-2">
+		<div class="mb-12 flex items-center justify-center gap-2">
 			<span class="text-4xl">Hi</span>
 			<input
 				type="text"
 				bind:value={name}
-				class="input input-lg input-bordered pr-4 text-4xl"
+				class="input input-lg input-bordered text-center"
 				placeholder="Name"
 			/>
+			<button
+				onclick={() => (name = getName())}
+				class="btn btn-lg border-0 bg-base-100 p-0 text-4xl">🎲</button
+			>
 		</div>
-
-		<div class="divider select-none"></div>
 
 		<div class="flex gap-2">
 			<input

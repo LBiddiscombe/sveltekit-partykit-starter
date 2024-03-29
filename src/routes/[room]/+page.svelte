@@ -5,6 +5,7 @@
 	import Waiting from './Waiting.svelte';
 	import Playing from './Playing.svelte';
 	import Results from './Results.svelte';
+	import { randomArrayItem } from '$lib';
 
 	let socket: PartySocket;
 	let gameState: GameState | undefined = $state();
@@ -50,6 +51,7 @@
 	function restart() {
 		if (!gameState) return;
 		gameState.status = 'Waiting';
+		gameState.buttonCount = randomArrayItem([1, 4, 9]);
 		gameState.players.forEach((p) => {
 			p.results = [];
 		});
@@ -74,12 +76,19 @@
 	});
 </script>
 
-<div class="container mx-auto grid h-screen max-w-xl place-items-center p-4">
-	{#if gameState?.status === 'Waiting'}
-		<Waiting {gameState} {me} {isHost} {start} />
-	{:else if gameState?.status === 'Playing'}
-		<Playing {gameState} {me} {end} />
-	{:else if gameState?.status === 'Results'}
-		<Results {gameState} {me} {isHost} {restart} />
-	{/if}
+<div
+	class="mx-auto grid h-screen max-h-svh place-items-center md:container md:max-h-[768px] md:max-w-md"
+>
+	<div class="flex h-full w-full flex-col items-center gap-8 py-8">
+		<p class="w-full text-center text-2xl text-base-content">
+			Game Code: <span class="bg-base-300 p-4 font-mono">{$page.params.room}</span>
+		</p>
+		{#if gameState?.status === 'Waiting'}
+			<Waiting {gameState} {me} {isHost} {start} />
+		{:else if gameState?.status === 'Playing'}
+			<Playing {gameState} {me} {end} />
+		{:else if gameState?.status === 'Results'}
+			<Results {gameState} {me} {isHost} {restart} />
+		{/if}
+	</div>
 </div>

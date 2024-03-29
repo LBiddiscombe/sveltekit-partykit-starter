@@ -8,13 +8,15 @@
 
 	const buttons = $state(
 		shuffle(
-			Array(9)
+			Array(gameState.buttonCount)
 				.fill({})
 				.map((_, index) => ({ id: index + 1, lit: false }))
 		)
 	);
 	let nextId = $state(1);
 	let start = Date.now();
+	const colOptions = ['grid-cols-1', 'grid-cols-2', 'grid-cols-3', 'grid-cols-4'];
+	const cols = Math.floor(Math.sqrt(gameState.buttonCount));
 
 	let countdown = $state(3);
 
@@ -42,42 +44,31 @@
 	}
 </script>
 
-<div
-	class="relative flex h-full max-h-[768px] w-full flex-col items-center gap-4 rounded-xl border-2 border-base-300 bg-base-200 p-8 pt-24 shadow-lg"
->
-	<p
-		class="absolute top-0 w-full rounded-t-xl bg-base-300 p-4 text-center text-2xl text-base-content"
-	>
-		Playing Game Code: <span class="font-mono">{$page.params.room}</span>
-	</p>
-
-	<div class="flex h-full w-full flex-col items-center justify-center gap-2">
-		{#if me}
-			<p class="text-xl">{me.userName}{countdown > 0 ? ', get ready...' : `, let's go!`}</p>
-		{/if}
-		{#if me && me.results.length < gameState.buttonCount}
-			<div class="grid place-items-center">
-				{#if countdown > 0}
-					<p class="text-6xl">{countdown}</p>
-				{:else}
-					<div class="grid grid-cols-3 grid-rows-3 gap-10 p-4">
-						{#each buttons as btn}
-							<button
-								onclick={handleClick}
-								value={btn.id}
-								disabled={btn.id !== nextId}
-								class="grid aspect-square w-16 select-none place-items-center rounded-full border text-2xl"
-								class:bg-yellow-200={btn.lit}
-								class:text-black={btn.lit}
-							>
-								{btn.id}
-							</button>
-						{/each}
-					</div>
-				{/if}
-			</div>
-		{:else}
-			<div class="divider w-full">Yawn... waiting for others</div>
-		{/if}
-	</div>
-</div>
+{#if me}
+	<p class="text-xl">{me.userName}{countdown > 0 ? ', get ready...' : `, let's go!`}</p>
+{/if}
+{#if me && me.results.length < gameState.buttonCount}
+	{#if countdown > 0}
+		<p class="text-6xl">{countdown}</p>
+	{:else}
+		<div
+			class="grid aspect-square w-full grid-cols-{cols} grid-rows-{cols} place-items-center gap-4 p-4"
+		>
+			{#each buttons as btn}
+				<button
+					onclick={handleClick}
+					value={btn.id}
+					disabled={btn.id !== nextId}
+					class="grid h-full w-full select-none place-items-center rounded-full border text-5xl"
+					class:border-4={btn.id === nextId}
+					class:bg-yellow-200={btn.lit}
+					class:text-black={btn.lit}
+				>
+					{btn.id}
+				</button>
+			{/each}
+		</div>
+	{/if}
+{:else}
+	<div class="divider w-full">Yawn... waiting for others</div>
+{/if}
