@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { flip } from 'svelte/animate';
+	import { quintOut } from 'svelte/easing';
 	import type { GameState, Player } from '$lib/types';
 
 	const {
@@ -24,7 +25,7 @@
 			return Number(a.results[step]) - Number(b.results[step]);
 		});
 		if (step < gameState.buttonCount - 1) {
-			setTimeout(stepThroughResults, 1000);
+			setTimeout(stepThroughResults, 300);
 		}
 	}
 
@@ -44,7 +45,7 @@
 			class="rounded-lg p-2 px-4"
 			class:bg-yellow-300={step === gameState.buttonCount - 1 && i === 0}
 			class:text-black={step === gameState.buttonCount - 1 && i === 0}
-			animate:flip
+			animate:flip={{ duration: 250, easing: quintOut }}
 		>
 			{step === gameState.buttonCount - 1 && i === 0 ? '🏆 ' : ''}
 			{player.userName}{player.id === me?.id ? ' (me)' : ''}
