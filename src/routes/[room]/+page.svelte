@@ -2,17 +2,14 @@
 	import Waiting from './Waiting.svelte';
 	import Playing from './Playing.svelte';
 	import Results from './Results.svelte';
-	import { onDestroy, onMount } from 'svelte';
+	import { onMount } from 'svelte';
 	import { room } from './room.svelte';
 
 	let { data } = $props();
 
 	onMount(() => {
 		room.connect(data.params.room, data.url.searchParams.get('name') ?? 'Guest');
-	});
-
-	onDestroy(() => {
-		room.disconnect();
+		return () => room.disconnect();
 	});
 </script>
 
@@ -24,16 +21,11 @@
 			Game Code: <span class="rounded-full bg-base-300 p-4 font-mono">{data.params.room}</span>
 		</p>
 		{#if room.gameState?.status === 'Waiting'}
-			<Waiting gameState={room.gameState} me={room.me} isHost={room.isHost} start={room.start} />
+			<Waiting />
 		{:else if room.gameState?.status === 'Playing'}
-			<Playing gameState={room.gameState} me={room.me} end={room.end} />
+			<Playing />
 		{:else if room.gameState?.status === 'Results'}
-			<Results
-				gameState={room.gameState}
-				me={room.me}
-				isHost={room.isHost}
-				restart={room.restart}
-			/>
+			<Results />
 		{/if}
 	</div>
 </div>

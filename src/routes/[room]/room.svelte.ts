@@ -5,7 +5,11 @@ import { dev } from '$app/environment';
 
 class Room {
   socket: PartySocket | undefined = $state();
-  gameState: GameState | undefined = $state();
+  gameState: GameState = $state({
+    status: 'Waiting',
+    buttonCount: randomArrayItem([1, 4, 9, 16]),
+    players: []
+  });
   me: Player | undefined = $derived(this.gameState?.players.find((p) => p.id === this.socket?.id));
   isHost: Boolean = $derived(this.me?.id === this.gameState?.players[0]?.id);
 
