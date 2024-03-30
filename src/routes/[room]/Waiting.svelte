@@ -1,16 +1,17 @@
 <script lang="ts">
 	import { room } from './room.svelte';
+	const { gameState, me, isHost } = $derived(room);
 </script>
 
 <div class="flex w-full flex-col items-center gap-2">
-	{#if room.me}
-		<p class="text-xl">Hi, {room.me.userName} {room.isHost ? '(host)' : ''}</p>
+	{#if me}
+		<p class="text-xl">Hi, {me.userName} {isHost ? '(host)' : ''}</p>
 	{/if}
-	{#if room.gameState.players.length > 1}
+	{#if gameState.players.length > 1}
 		<!-- content here -->
 		<div class="divider">Other Players</div>
-		{#each room.gameState.players as player, i}
-			{#if player.id !== room.me?.id}
+		{#each gameState.players as player, i}
+			{#if player.id !== me?.id}
 				<p class="p-2">
 					{player.userName}
 					{i === 0 ? '(host)' : ''}
@@ -23,7 +24,7 @@
 </div>
 
 <div class="flex-1"></div>
-{#if room.isHost}
+{#if isHost}
 	<button onclick={() => room.start()} class="btn btn-primary btn-lg">Start Game</button>
 {:else}
 	<p class="text-sm">Waiting for host to start the game</p>

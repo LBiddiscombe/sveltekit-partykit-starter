@@ -2,9 +2,11 @@
 	import { shuffle } from '$lib/utils';
 	import { room } from './room.svelte';
 
-	const buttons = $state(
+	const { gameState, me } = $derived(room);
+
+	const buttons = $derived(
 		shuffle(
-			Array(room.gameState.buttonCount)
+			Array(gameState.buttonCount)
 				.fill({})
 				.map((_, index) => ({ id: index + 1, lit: false }))
 		)
@@ -12,7 +14,7 @@
 	let nextId = $state(1);
 	let start = Date.now();
 	const colOptions = ['grid-cols-1', 'grid-cols-2', 'grid-cols-3', 'grid-cols-4'];
-	const cols = Math.floor(Math.sqrt(room.gameState.buttonCount));
+	const cols = $derived(Math.floor(Math.sqrt(gameState.buttonCount)));
 
 	let countdown = $state(3);
 
@@ -26,24 +28,24 @@
 	setTimeout(intro, 1000);
 
 	function handleClick(e: MouseEvent) {
-		if (!room.me) return;
+		if (!me) return;
 
 		const target = e.target as HTMLButtonElement;
 		const btn = buttons.find((b) => b.id === +target.value);
 		btn.lit = true;
 		nextId += 1;
 
-		room.me.results.push(Date.now() - start);
-		if (room.me.results.length === room.gameState.buttonCount) {
+		me.results.push(Date.now() - start);
+		if (me.results.length === gameState.buttonCount) {
 			room.end();
 		}
 	}
 </script>
 
-{#if room.me}
-	<p class="text-xl">{room.me.userName}{countdown > 0 ? ', get ready...' : `, let's go!`}</p>
+{#if me}
+	<p class="text-xl">{me.userName}{countdown > 0 ? ', get ready...' : `, let's go!`}</p>
 {/if}
-{#if room.me && room.me.results.length < room.gameState.buttonCount}
+{#if me && me.results.length < gameState.buttonCount}
 	{#if countdown > 0}
 		<p class="text-6xl">{countdown}</p>
 	{:else}
