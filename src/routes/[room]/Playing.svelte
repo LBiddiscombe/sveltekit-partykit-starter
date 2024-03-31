@@ -1,9 +1,11 @@
 <script lang="ts">
 	import { shuffle } from '$lib/utils';
+	import { onMount } from 'svelte';
 	import { room } from './room.svelte';
 
+	const colOptions = ['grid-cols-1', 'grid-cols-2', 'grid-cols-3', 'grid-cols-4'];
 	const { gameState, me } = $derived(room);
-
+	const cols = $derived(Math.floor(Math.sqrt(gameState.buttonCount)));
 	const buttons = $derived(
 		shuffle(
 			Array(gameState.buttonCount)
@@ -11,21 +13,21 @@
 				.map((_, index) => ({ id: index + 1, lit: false }))
 		)
 	);
+
 	let nextId = $state(1);
 	let start = Date.now();
-	const colOptions = ['grid-cols-1', 'grid-cols-2', 'grid-cols-3', 'grid-cols-4'];
-	const cols = $derived(Math.floor(Math.sqrt(gameState.buttonCount)));
-
 	let countdown = $state(3);
 
-	function intro() {
-		countdown -= 1;
-		if (countdown > 0) {
-			setTimeout(intro, 1000);
+	onMount(() => {
+		function intro() {
+			countdown -= 1;
+			if (countdown > 0) {
+				setTimeout(intro, 1000);
+			}
+			start = Date.now();
 		}
-		start = Date.now();
-	}
-	setTimeout(intro, 1000);
+		setTimeout(intro, 1000);
+	});
 
 	function handleClick(e: MouseEvent) {
 		if (!me) return;
@@ -37,7 +39,7 @@
 
 		me.results.push(Date.now() - start);
 		if (me.results.length === gameState.buttonCount) {
-			room.end();
+			room.endGame();
 		}
 	}
 </script>

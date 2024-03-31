@@ -3,28 +3,27 @@
 	import { quintOut } from 'svelte/easing';
 	import { room } from './room.svelte';
 	import type { Player } from '$lib/types';
+	import { onMount } from 'svelte';
 
 	const { gameState, me, isHost } = $derived(room);
 
 	let step = $state(-1);
 	let sortedPlayers: Player[] = $state([]);
 
-	function skipToResult() {
-		step = gameState.buttonCount - 1;
-	}
-
-	function stepThroughResults() {
-		if (step >= gameState.buttonCount - 1) return;
-		step += 1;
-		sortedPlayers = [...gameState.players].sort((a, b) => {
-			return Number(a.results[step]) - Number(b.results[step]);
-		});
-		if (step < gameState.buttonCount - 1) {
-			setTimeout(stepThroughResults, 300);
+	onMount(() => {
+		function stepThroughResults() {
+			if (step >= gameState.buttonCount - 1) return;
+			step += 1;
+			sortedPlayers = [...gameState.players].sort((a, b) => {
+				return Number(a.results[step]) - Number(b.results[step]);
+			});
+			if (step < gameState.buttonCount - 1) {
+				setTimeout(stepThroughResults, 300);
+			}
 		}
-	}
 
-	setTimeout(stepThroughResults, 2000);
+		setTimeout(stepThroughResults, 2000);
+	});
 </script>
 
 <div class="flex w-full flex-col items-center gap-2">
@@ -50,11 +49,8 @@
 </div>
 
 <div class="flex-1"></div>
-{#if step < gameState.buttonCount - 1}
-	<button onclick={skipToResult} class="underline">Skip to result</button>
-{/if}
 {#if isHost}
-	<button onclick={() => room.restart()} class="btn btn-primary btn-lg">Restart Game</button>
+	<button onclick={() => room.restartGamne()} class="btn btn-primary btn-lg">Restart Game</button>
 {:else}
 	<p class="text-sm">Waiting for host to restart the game</p>
 {/if}

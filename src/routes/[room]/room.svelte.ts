@@ -13,7 +13,7 @@ class Room {
   me: Player | undefined = $derived(this.gameState?.players.find((p) => p.id === this.socket?.id));
   isHost: Boolean = $derived(this.me?.id === this.gameState?.players[0]?.id);
 
-  connect(room: string, name: string) {
+  join(room: string, name: string) {
     this.socket = new PartySocket({
       host: dev
         ? 'localhost:1999'
@@ -30,7 +30,7 @@ class Room {
     });
   }
 
-  disconnect() {
+  leave() {
     if (this.socket) {
       this.socket?.removeEventListener('message', () => { });
       this.socket?.close();
@@ -38,19 +38,20 @@ class Room {
     }
   }
 
-  sendToPartyServer(type: string = 'syncGameState') {
-    if (this.socket) {
-      if (type === 'syncGameState') {
-        const parcel = JSON.stringify({
-          message: {
-            type,
-            data: this.gameState
-          },
-          id: this.socket.id
-        });
-        this.socket.send(parcel);
-      }
+  emitPartyMessage(type: string = 'syncGameState') {
+    if (!this.socket) return;
+
+    if (type === 'syncGameState') {
+      const parcel = JSON.stringify({
+        message: {
+          type,
+          data: this.gameState
+        },
+        id: this.socket.id
+      });
+      this.socket.send(parcel);
     }
+
     if (type === 'syncPlayerState') {
       const parcel = JSON.stringify({
         message: {
@@ -63,25 +64,25 @@ class Room {
     }
   }
 
-  start() {
+  startGame() {
     if (!this.gameState) return;
     this.gameState.status = 'Playing';
-    this.sendToPartyServer();
+    this.emitPartyMessage();
   }
 
-  end() {
+  endGame() {
     if (!this.gameState) return;
-    this.sendToPartyServer('syncPlayerState');
+    this.emitPartyMessage('syncPlayerState');
   }
 
-  restart() {
+  restartGamne() {
     if (!this.gameState) return;
     this.gameState.status = 'Waiting';
     this.gameState.buttonCount = randomArrayItem([1, 4, 9, 16]);
     this.gameState.players.forEach((p) => {
       p.results = [];
     });
-    this.sendToPartyServer();
+    this.emitPartyMessage();
   }
 
 }

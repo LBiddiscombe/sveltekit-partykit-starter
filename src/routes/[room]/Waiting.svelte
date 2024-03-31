@@ -25,7 +25,7 @@
 
 <div class="flex-1"></div>
 {#if isHost}
-	<button onclick={() => room.start()} class="btn btn-primary btn-lg">Start Game</button>
+	<button onclick={() => room.startGame()} class="btn btn-primary btn-lg">Start Game</button>
 {:else}
 	<p class="text-sm">Waiting for host to start the game</p>
 {/if}

@@ -8,8 +8,8 @@
 	let { data } = $props();
 
 	onMount(() => {
-		room.connect(data.params.room, data.url.searchParams.get('name') ?? 'Guest');
-		return () => room.disconnect();
+		room.join(data.params.room, data.url.searchParams.get('name') ?? 'Guest');
+		return () => room.leave();
 	});
 </script>
 
