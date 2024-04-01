@@ -12,12 +12,12 @@
 
 	onMount(() => {
 		function stepThroughResults() {
-			if (step >= gameState.buttonCount - 1) return;
+			if (step >= gameState.buttons.length - 1) return;
 			step += 1;
 			sortedPlayers = [...gameState.players].sort((a, b) => {
 				return Number(a.results[step]) - Number(b.results[step]);
 			});
-			if (step < gameState.buttonCount - 1) {
+			if (step < gameState.buttons.length - 1) {
 				setTimeout(stepThroughResults, 300);
 			}
 		}
@@ -29,19 +29,19 @@
 <div data-testid="results" class="flex w-full flex-col items-center gap-2">
 	{#if step < 0}
 		<p>Who was the fastest?</p>
-	{:else if step < gameState.buttonCount - 1}
-		<p>{`Button ${step + 1} of ${gameState.buttonCount}`}</p>
+	{:else if step < gameState.buttons.length - 1}
+		<p>{`Button ${step + 1} of ${gameState.buttons.length}`}</p>
 	{:else}
 		<p>And the winner is...</p>
 	{/if}
 	{#each sortedPlayers as player, i (player.id)}
 		<p
 			class="rounded-lg p-2 px-4"
-			class:bg-yellow-300={step === gameState.buttonCount - 1 && i === 0}
-			class:text-black={step === gameState.buttonCount - 1 && i === 0}
+			class:bg-yellow-300={step === gameState.buttons.length - 1 && i === 0}
+			class:text-black={step === gameState.buttons.length - 1 && i === 0}
 			animate:flip={{ duration: 250, easing: quintOut }}
 		>
-			{step === gameState.buttonCount - 1 && i === 0 ? '🏆 ' : ''}
+			{step === gameState.buttons.length - 1 && i === 0 ? '🏆 ' : ''}
 			{player.userName}{player.id === me?.id ? ' (me)' : ''}
 			{step >= 0 ? ` - ${(+player.results[step] / 1000).toFixed(3)}s` : ''}
 		</p>
@@ -50,7 +50,7 @@
 
 <div class="flex-1"></div>
 {#if isHost}
-	<button onclick={() => room.restartGamne()} class="btn btn-primary btn-lg">Restart Game</button>
+	<button onclick={() => room.restartGame()} class="btn btn-primary btn-lg">Restart Game</button>
 {:else}
 	<p class="text-sm">Waiting for host to restart the game</p>
 {/if}

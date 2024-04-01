@@ -4,8 +4,13 @@ export type Player = {
   results: Number[]
 }
 
+type Button = {
+  id: number;
+  lit: boolean;
+}
+
 export type GameState = {
   status: "Waiting" | "Playing" | "Results";
-  buttonCount: number;
+  buttons: Button[];
   players: Player[]
 }

@@ -7,16 +7,18 @@ class Room {
   socket: PartySocket | undefined = $state();
   gameState: GameState = $state({
     status: 'Waiting',
-    buttonCount: randomArrayItem([1, 4, 9, 16]),
+    buttonCount: 0,
+    buttons: [],
     players: []
   });
   me: Player | undefined = $derived(this.gameState?.players.find((p) => p.id === this.socket?.id));
   isHost: Boolean = $derived(this.me?.id === this.gameState?.players[0]?.id);
 
   join(room: string, name: string) {
+    console.log(dev)
     this.socket = new PartySocket({
       host: dev
-        ? 'localhost:1999'
+        ? 'http://192.168.1.8:1999'
         : `https://sveltekit-partykit-starter-party.lbiddiscombe.partykit.dev`,
       room,
       query: {
@@ -62,9 +64,21 @@ class Room {
       });
       this.socket?.send(parcel);
     }
+
+    if (type === 'resetGame') {
+      const parcel = JSON.stringify({
+        message: {
+          type
+        },
+        id: this.socket?.id
+      });
+      this.socket?.send(parcel);
+    }
+
   }
 
   startGame() {
+    console.log('start game');
     if (!this.gameState) return;
     this.gameState.status = 'Playing';
     this.emitPartyMessage();
@@ -75,14 +89,8 @@ class Room {
     this.emitPartyMessage('syncPlayerState');
   }
 
-  restartGamne() {
-    if (!this.gameState) return;
-    this.gameState.status = 'Waiting';
-    this.gameState.buttonCount = randomArrayItem([1, 4, 9, 16]);
-    this.gameState.players.forEach((p) => {
-      p.results = [];
-    });
-    this.emitPartyMessage();
+  restartGame() {
+    this.emitPartyMessage('resetGame');
   }
 
 }

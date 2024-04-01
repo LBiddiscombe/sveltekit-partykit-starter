@@ -1,19 +1,10 @@
 <script lang="ts">
-	import { shuffle } from '$lib/utils';
 	import { onMount } from 'svelte';
 	import { room } from './room.svelte';
 
 	const colOptions = ['grid-cols-1', 'grid-cols-2', 'grid-cols-3', 'grid-cols-4'];
 	const { gameState, me } = $derived(room);
-	const cols = $derived(Math.floor(Math.sqrt(gameState.buttonCount)));
-	const buttons = $derived(
-		shuffle(
-			Array(gameState.buttonCount)
-				.fill({})
-				.map((_, index) => ({ id: index + 1, lit: false }))
-		)
-	);
-
+	const cols = $derived(Math.floor(Math.sqrt(gameState.buttons.length)));
 	let nextId = $state(1);
 	let start = Date.now();
 	let countdown = $state(3);
@@ -33,28 +24,29 @@
 		if (!me) return;
 
 		const target = e.target as HTMLButtonElement;
-		const btn = buttons.find((b) => b.id === +target.value);
-		btn.lit = true;
+		const btn = gameState.buttons.find((b) => b.id === +target.value);
+		if (btn) btn.lit = true;
 		nextId += 1;
 
 		me.results.push(Date.now() - start);
-		if (me.results.length === gameState.buttonCount) {
+		if (me.results.length === gameState.buttons.length) {
 			room.endGame();
 		}
 	}
 </script>
 
+<div data-testid="playing"></div>
 {#if me}
 	<p class="text-xl">{me.userName}{countdown > 0 ? ', get ready...' : `, let's go!`}</p>
 {/if}
-{#if me && me.results.length < gameState.buttonCount}
+{#if me && me.results.length < gameState.buttons.length}
 	{#if countdown > 0}
 		<p class="text-6xl">{countdown}</p>
 	{:else}
 		<div
 			class="grid aspect-square w-full grid-cols-{cols} grid-rows-{cols} place-items-center gap-4 p-4"
 		>
-			{#each buttons as btn}
+			{#each gameState.buttons as btn}
 				<button
 					onclick={handleClick}
 					value={btn.id}
