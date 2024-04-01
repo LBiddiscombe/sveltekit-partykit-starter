@@ -25,5 +25,5 @@ Fastest to click them all wins!
 
 ## Thanks
 - [SvelteKit](https://kit.svelte.dev) for the best dev experience as always
-- [PatyKit](https://www.partykit.io) for an amazingly easy to use multiplayer framework
+- [PartyKit](https://www.partykit.io) for an amazingly easy to use multiplayer framework
 - [zeudev](https://github.com/zeucapua)'s https://github.com/zeucapua/partykit-simplified repo for making it obvious where to begin!
