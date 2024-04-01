@@ -26,7 +26,7 @@
 	});
 </script>
 
-<div class="flex w-full flex-col items-center gap-2">
+<div data-testid="results" class="flex w-full flex-col items-center gap-2">
 	{#if step < 0}
 		<p>Who was the fastest?</p>
 	{:else if step < gameState.buttonCount - 1}

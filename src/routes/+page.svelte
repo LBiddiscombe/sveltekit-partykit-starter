@@ -15,6 +15,10 @@
 	$effect(() => {
 		localStorage.setItem('name', name);
 	});
+
+	$effect(() => {
+		room = room.toUpperCase();
+	});
 </script>
 
 <div
@@ -63,7 +67,7 @@
 
 <dialog id="my_modal" class="modal" bind:this={modal}>
 	<div class="modal-box flex flex-col gap-4">
-		<h3 class="text-lg font-bold">Simple Multiplayer Reaction Game</h3>
+		<h1 class="text-lg font-bold">Simple Multiplayer Reaction Game</h1>
 		<div class="divider"></div>
 		<p class="">
 			Create a new game room, and share the code with friends, or join with a code shared with you.
