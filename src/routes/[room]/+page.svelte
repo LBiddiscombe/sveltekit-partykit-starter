@@ -18,7 +18,7 @@
 >
 	<div class="flex h-full w-full flex-col items-center gap-8 py-8">
 		<h1 class="w-full text-center text-2xl text-base-content">
-			Game Code: <span class="rounded-full bg-base-300 p-4 font-mono">{data.params.room}</span>
+			Game Code: <span class="rounded-xl bg-base-300 p-4 font-mono">{data.params.room}</span>
 		</h1>
 		{#if room.gameState?.status === 'Waiting'}
 			<Waiting />

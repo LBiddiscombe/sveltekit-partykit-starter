@@ -22,7 +22,7 @@
 			}
 		}
 
-		setTimeout(stepThroughResults, 2000);
+		setTimeout(stepThroughResults, 1000);
 	});
 </script>
 
@@ -49,9 +49,11 @@
 </div>
 
 <div class="flex-1"></div>
-{#if isHost}
-	<button onclick={() => room.restartGame()} class="btn btn-primary btn-lg">Restart Game</button>
-{:else}
-	<p class="text-sm">Waiting for host to restart the game</p>
+{#if step >= gameState.buttons.length - 1}
+	{#if isHost}
+		<button onclick={() => room.restartGame()} class="btn btn-primary btn-lg">Play Again</button>
+	{:else}
+		<p class="text-sm">Waiting for host to restart the game</p>
+	{/if}
+	<a href="/" class="underline">Leave Game</a>
 {/if}
-<a href="/" class="underline">Leave Game</a>

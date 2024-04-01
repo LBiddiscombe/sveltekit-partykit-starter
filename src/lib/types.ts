@@ -14,3 +14,5 @@ export type GameState = {
   buttons: Button[];
   players: Player[]
 }
+
+export type PartyMessage = "syncGameState" | "syncPlayerState" | "resetGame"; 

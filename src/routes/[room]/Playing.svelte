@@ -35,7 +35,6 @@
 	}
 </script>
 
-<div data-testid="playing"></div>
 {#if me}
 	<p class="text-xl">{me.userName}{countdown > 0 ? ', get ready...' : `, let's go!`}</p>
 {/if}
@@ -64,3 +63,4 @@
 {:else}
 	<div class="divider w-full">Yawn... waiting for others</div>
 {/if}
+<div data-testid="playing"></div>
