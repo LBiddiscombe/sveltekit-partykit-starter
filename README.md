@@ -5,11 +5,11 @@ A really simple multiplayer game that uses Sveltekit (Svelte 5) and PartyKit. Bu
 ## The "Game"
 Create a new game room, and share the code with friends, or join with a code shared with you.
 
-The "game" is simple - you'll be shown 1, 4, 9 or 16 labelled buttons in a grid.
+The "game" is simple - you'll be shown a grid of 1, 4, 9 or 16 lights.
 
-They are in a random order, but everyone in the same room gets the same.
+They will light in a random order, but everyone in the same room gets the same.
 
-Click them in sequence starting at 1.
+Click them all as fast as you can. A wrong move will be penalised with +0.5 seconds.
 
 Fastest to click them all wins!
 

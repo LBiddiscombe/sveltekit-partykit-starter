@@ -72,9 +72,11 @@
 		<p class="">
 			Create a new game room, and share the code with friends, or join with a code shared with you.
 		</p>
-		<p class="">The "game" is simple - you'll be shown 1, 4, 9 or 16 labelled buttons in a grid.</p>
-		<p class="">They are in a random order.</p>
-		<p class="">Click them in sequence starting at 1.</p>
+		<p class="">The "game" is simple - you'll be shown a grid of 1, 4, 9 or 16 lights.</p>
+		<p class="">They will light in a random order, but everyone in the same room gets the same.</p>
+		<p class="">
+			Click them all as fast as you can. A wrong move will be penalised with +0.5 seconds.
+		</p>
 		<p class="">Fastest to click them all wins!</p>
 		<div class="modal-action">
 			<form method="dialog">

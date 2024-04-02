@@ -8,6 +8,7 @@
 	let nextId = $state(1);
 	let start = Date.now();
 	let countdown = $state(3);
+	let penalties = $state(0);
 
 	onMount(() => {
 		function intro() {
@@ -21,15 +22,21 @@
 	});
 
 	function handleClick(e: MouseEvent) {
+		const target = e.target as HTMLButtonElement;
+		if (+target.value !== nextId) {
+			penalties += 0.5;
+			return;
+		}
+
 		if (!me) return;
 
-		const target = e.target as HTMLButtonElement;
 		const btn = gameState.buttons.find((b) => b.id === +target.value);
 		if (btn) btn.lit = true;
 		nextId += 1;
 
 		me.results.push(Date.now() - start);
 		if (me.results.length === gameState.buttons.length) {
+			me.results[me.results.length - 1] += penalties;
 			room.endGame();
 		}
 	}
@@ -49,18 +56,32 @@
 				<button
 					onclick={handleClick}
 					value={btn.id}
-					disabled={btn.id !== nextId}
-					class="grid h-full w-full select-none place-items-center rounded-full border text-5xl"
-					class:outline={btn.id === nextId}
-					class:bg-yellow-200={btn.lit}
-					class:text-black={btn.lit}
+					class="grid h-full w-full select-none place-items-center rounded-full border-4 border-base-300 bg-none text-5xl"
+					class:lit={btn.id === nextId}
 				>
-					{btn.id}
 				</button>
 			{/each}
 		</div>
+		<p class="text-xl">
+			Penalties: <span
+				class="font-mono font-semibold"
+				class:text-green-500={penalties <= 0}
+				class:text-red-500={penalties > 0}>{penalties.toFixed(1)}s</span
+			>
+		</p>
 	{/if}
 {:else}
 	<div class="divider w-full">Yawn... waiting for others</div>
 {/if}
 <div data-testid="playing"></div>
+
+<style>
+	button.lit {
+		--neon: #00fe9b;
+		--neon-glow: #02c435;
+		border: 4px solid var(--neon);
+		box-shadow:
+			0 0 50px var(--neon-glow),
+			inset 0 0 50px var(--neon-glow);
+	}
+</style>

@@ -12,12 +12,12 @@ class Room {
     players: []
   });
   me: Player | undefined = $derived(this.gameState?.players.find((p) => p.id === this.socket?.id));
-  isHost: Boolean = $derived(this.me?.id === this.gameState?.players[0]?.id);
+  isHost: boolean = $derived(this.me?.id === this.gameState?.players[0]?.id);
 
   join(room: string, name: string) {
-
     this.socket = new PartySocket({
-      host: dev
+      // @ts-ignore
+      host: dev || window.isUnderTest
         ? 'http://192.168.1.8:1999'
         : `https://sveltekit-partykit-starter-party.lbiddiscombe.partykit.dev`,
       room,
@@ -35,8 +35,8 @@ class Room {
   leave() {
     if (!this.socket) return;
 
-    this.socket?.removeEventListener('message', () => { });
-    this.socket?.close();
+    this.socket.removeEventListener('message', () => { });
+    this.socket.close();
     this.socket = undefined;
   }
 
@@ -65,7 +65,7 @@ class Room {
     this.emitPartyMessage('syncPlayerState');
   }
 
-  restartGame() {
+  resetGame() {
     this.emitPartyMessage('resetGame');
   }
 

@@ -11,6 +11,7 @@
 	let sortedPlayers: Player[] = $state([]);
 
 	onMount(() => {
+		sortedPlayers = [...gameState.players];
 		function stepThroughResults() {
 			if (step >= gameState.buttons.length - 1) return;
 			step += 1;
@@ -51,7 +52,7 @@
 <div class="flex-1"></div>
 {#if step >= gameState.buttons.length - 1}
 	{#if isHost}
-		<button onclick={() => room.restartGame()} class="btn btn-primary btn-lg">Play Again</button>
+		<button onclick={() => room.resetGame()} class="btn btn-primary btn-lg">Play Again</button>
 	{:else}
 		<p class="text-sm">Waiting for host to restart the game</p>
 	{/if}

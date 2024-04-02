@@ -1,5 +1,12 @@
 import { expect, test } from '@playwright/test';
 
+test.beforeEach(async ({ context }) => {
+	await context.addInitScript(() => {
+		// @ts-ignore
+		window.isUnderTest = true;
+	})
+})
+
 test('index page has expected h1', async ({ page }) => {
 	await page.goto('/');
 	await expect(page.getByRole('heading', { name: 'Simple Multiplayer Reaction Game' })).toBeVisible();

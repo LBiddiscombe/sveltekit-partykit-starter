@@ -1,7 +1,7 @@
 export type Player = {
-  id: string
-  userName: string,
-  results: Number[]
+  id: string;
+  userName: string;
+  results: number[];
 }
 
 type Button = {
@@ -12,7 +12,7 @@ type Button = {
 export type GameState = {
   status: "Waiting" | "Playing" | "Results";
   buttons: Button[];
-  players: Player[]
+  players: Player[];
 }
 
 export type PartyMessage = "syncGameState" | "syncPlayerState" | "resetGame"; 
