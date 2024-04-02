@@ -9,6 +9,7 @@
 
 	let step = $state(-1);
 	let sortedPlayers: Player[] = $state([]);
+	let isPB: boolean = $state(false);
 
 	onMount(() => {
 		sortedPlayers = [...gameState.players];
@@ -20,6 +21,17 @@
 			});
 			if (step < gameState.buttons.length - 1) {
 				setTimeout(stepThroughResults, 300);
+			}
+		}
+
+		if (me) {
+			const prevPB = Number(localStorage.getItem(`pb${gameState.buttons.length}`) || Infinity);
+			if (me.results[gameState.buttons.length - 1] < prevPB) {
+				isPB = true;
+				localStorage.setItem(
+					`pb${gameState.buttons.length}`,
+					JSON.stringify(me.results[gameState.buttons.length - 1])
+				);
 			}
 		}
 
@@ -36,7 +48,7 @@
 		<p>And the winner is...</p>
 	{/if}
 	{#each sortedPlayers as player, i (player.id)}
-		<p
+		<div
 			class="rounded-lg p-2 px-4"
 			class:bg-yellow-300={step === gameState.buttons.length - 1 && i === 0}
 			class:text-black={step === gameState.buttons.length - 1 && i === 0}
@@ -45,7 +57,10 @@
 			{step === gameState.buttons.length - 1 && i === 0 ? '🏆 ' : ''}
 			{player.userName}{player.id === me?.id ? ' (me)' : ''}
 			{step >= 0 ? ` - ${(+player.results[step] / 1000).toFixed(3)}s` : ''}
-		</p>
+			{#if isPB}
+				<div class="badge badge-warning ml-2">pb</div>
+			{/if}
+		</div>
 	{/each}
 </div>
 
